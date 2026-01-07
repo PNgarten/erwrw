@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Möbelmontage Kostenrechner KOMPLETT - P&N</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c5f2d;
+            --primary-light: #4a8a4c;
+            --primary-dark: #1a3a1b;
+            --accent-color: #ff6b35;
+            --accent-hover: #ff8555;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --text-dark: #2d3436;
+            --text-muted: #636e72;
+            --border-color: #dfe6e9;
+            --success-color: #00b894;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.16);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .calculator-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--bg-white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .contact-info {
+            margin-top: 20px;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        .sections-column {
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+            padding-right: 20px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+            padding: 30px;
+            background: var(--bg-light);
+            border-radius: 15px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subsection-title {
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+            margin: 25px 0 15px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .input-description {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(44, 95, 45, 0.1);
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .checkbox-item {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--primary-light);
+            background: #f0f7f0;
+            transform: translateY(-1px);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .result-sticky {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .result-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 15px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            font-size: 0.95rem;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-total-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(255,255,255,0.4);
+        }
+
+        .result-total {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .calculate-button {
+            width: 100%;
+            padding: 15px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .calculate-button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .reset-button {
+            width: 100%;
+            padding: 12px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+        }
+
+        .reset-button:hover {
+            background: #5a6268;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .info-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #856404;
+        }
+
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #721c24;
+        }
+
+        .counter-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .counter-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .counter-btn:hover {
+            background: var(--primary-light);
+        }
+
+        .counter-value {
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-sticky {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .main-layout {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .quantity-input {
+            width: 80px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--border-color), transparent);
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="header">
+            <h1>🛠️ MÖBELMONTAGE KOSTENRECHNER</h1>
+            <p>Umfassender Rechner für alle Möbelmontage-Leistungen</p>
+            <div class="contact-info">
+                📞 +49 174 7021338 | ✉ info@pn-garten-und-reinigung.com<br>
+                <strong>P&N Garten und Reinigung - Professionelle Möbelmontage seit 2019</strong>
+            </div>
+        </div>
+
+        <div class="info-box" style="margin: 0;">
+            <div class="info-title">ℹ️ So funktioniert der Rechner</div>
+            Wählen Sie alle gewünschten Möbel und Leistungen aus. Der Rechner berechnet automatisch eine realistische Preisspanne. Für ein verbindliches Angebot kontaktieren Sie uns gerne!
+        </div>
+
+        <div class="main-layout">
+            <div class="sections-column">
+                
+                <!-- IKEA MÖBEL -->
+                <div class="section">
+                    <h2 class="section-title">🇸🇪 IKEA Möbel</h2>
+
+                    <h3 class="subsection-title">PAX Schrank</h3>
+                    <div class="input-group">
+                        <label class="input-label">Anzahl PAX Schränke</label>
+                        <input type="number" id="pax-quantity" min="0" max="10" value="0" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Breite pro Schrank</label>
+                        <select id="pax-width">
+                            <option value="0-0">Bitte wählen</option>
+                            <option value="80-120">50-75 cm (€80-120)</option>
+                            <option value="120-180">100 cm (€120-180)</option>
+                            <option value="180-260">150 cm (€180-260)</option>
+                            <option value="240-340">200 cm (€240-340)</option>
+                            <option value="300-420">250 cm (€300-420)</option>
+                            <option value="360-550">300 cm+ (€360-550)</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="pax-sliding">
+                            <label><span>Schiebetüren</span><span class="price-badge">+€20-50</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="pax-drawers">
+                            <label><span>Mit Schubladen (2-4)</span><span class="price-badge">+€20-35</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="pax-drawers-many">
+                            <label><span>Viele Schubladen (5-8)</span><span class="price-badge">+€35-60</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="pax-glass">
+                            <label><span>Glasböden</span><span class="price-badge">+€15-25</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="pax-lighting">
+                            <label><span>Beleuchtung</span><span class="price-badge">+€25-40</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="pax-wall">
+                            <label><span>Wandmontage</span><span class="price-badge">+€25-40</span></label>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">MALM Bett</h3>
+                    <div class="input-group">
+                        <label class="input-label">Anzahl MALM Betten</label>
+                        <input type="number" id="malm-quantity" min="0" max="10" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Größe</label>
+                        <select id="malm-size">
+                            <option value="0-0">Bitte wählen</option>
+                            <option value="60-90">90x200 Single (€60-90)</option>
+                            <option value="80-120">140x200 Doppel (€80-120)</option>
+                            <option value="90-140">160x200 Queen (€90-140)</option>
+                            <option value="100-160">180x200 King (€100-160)</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="malm-storage">
+                        <label><span>Mit Aufbewahrung</span><span class="price-badge">+€30-50</span></label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="malm-lattenrost">
+                        <label><span>Mit Lattenrost</span><span class="price-badge">+€20-35</span></label>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">MALM/HEMNES Kommode</h3>
+                    <div class="input-group">
+                        <label class="input-label">Anzahl Kommoden</label>
+                        <input type="number" id="kommode-quantity" min="0" max="10" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Schubladen</label>
+                        <select id="kommode-drawers">
+                            <option value="0-0">Bitte wählen</option>
+                            <option value="40-65">2 Schubladen (€40-65)</option>
+                            <option value="50-80">3 Schubladen (€50-80)</option>
+                            <option value="60-95">4 Schubladen (€60-95)</option>
+                            <option value="80-130">6 Schubladen (€80-130)</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="kommode-glass">
+                        <label><span>Mit Glaseinsatz</span><span class="price-badge">+€10-15</span></label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="kommode-wall">
+                        <label><span>Wandmontage</span><span class="price-badge">+€20-35</span></label>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">BILLY Regal</h3>
+                    <div class="input-group">
+                        <label class="input-label">Anzahl BILLY Regale</label>
+                        <input type="number" id="billy-quantity" min="0" max="20" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Höhe</label>
+                        <select id="billy-height">
+                            <option value="0-0">Bitte wählen</option>
+                            <option value="35-55">106 cm (€35-55)</option>
+                            <option value="50-75">202 cm (€50-75)</option>
+                            <option value="65-95">237 cm (€65-95)</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="billy-glass">
+                        <label><span>Mit Glastüren</span><span class="price-badge">+€15-25</span></label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="billy-corner">
+                        <label><span>Ecklösung</span><span class="price-badge">+€25-40</span></label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="billy-wall">
+                        <label><span>Wandbefestigung</span><span class="price-badge">+€15-25</span></label>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">BESTÅ Wohnwand</h3>
+                    <div class="input-group">
+                        <label class="input-label">BESTÅ Kombination</label>
+                        <select id="besta-combo">
+                            <option value="0-0">Keine BESTÅ</option>
+                            <option value="40-65">1 Element 60cm (€40-65)</option>
+                            <option value="70-110">2 Elemente 120cm (€70-110)</option>
+                            <option value="100-155">3 Elemente 180cm (€100-155)</option>
+                            <option value="130-200">4 Elemente 240cm (€130-200)</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="besta-glass">
+                            <label><span>Glastüren</span><span class="price-badge">+€15-25</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="besta-drawers">
+                            <label><span>Schubladen</span><span class="price-badge">+€20-35</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="besta-light">
+                            <label><span>Beleuchtung</span><span class="price-badge">+€30-50</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="besta-cable">
+                            <label><span>Kabelmanagement</span><span class="price-badge">+€20-35</span></label>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">IKEA Tische & Stühle</h3>
+                    <div class="input-group">
+                        <label class="input-label">Tisch</label>
+                        <select id="table">
+                            <option value="0-0">Kein Tisch</option>
+                            <option value="40-70">LISABO fest 4-6 Pers (€40-70)</option>
+                            <option value="60-95">EKEDALEN ausziehbar (€60-95)</option>
+                            <option value="70-110">INGATORP ausziehbar (€70-110)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Anzahl Stühle</label>
+                        <input type="number" id="chairs" min="0" max="20" value="0" placeholder="Pro Stuhl: €8-25">
+                    </div>
+                </div>
+
+                <!-- ANDERE MARKEN -->
+                <div class="section">
+                    <h2 class="section-title">🏪 Andere Marken</h2>
+
+                    <h3 class="subsection-title">POCO / ROLLER / MÖBEL BOSS</h3>
+                    <p class="input-description">Teilweise vormontierte Möbel</p>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="poco-wardrobe-2">
+                            <label><span>Schrank 2-türig</span><span class="price-badge">€60-220</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="poco-wardrobe-3">
+                            <label><span>Schrank 3-türig</span><span class="price-badge">€80-280</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="poco-wardrobe-4">
+                            <label><span>Schrank 4+ türig</span><span class="price-badge">€100-350</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="poco-bed-simple">
+                            <label><span>Bett ohne Kästen</span><span class="price-badge">€50-180</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="poco-bed-storage">
+                            <label><span>Bett mit Kästen</span><span class="price-badge">€70-240</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="poco-dresser">
+                            <label><span>Kommode 3-4 Schubl</span><span class="price-badge">€40-170</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="poco-living-2">
+                            <label><span>Wohnwand 2-teilig</span><span class="price-badge">€100-400</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="poco-living-3">
+                            <label><span>Wohnwand 3+ teilig</span><span class="price-badge">€150-600</span></label>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">HÖFFNER / SEGMÜLLER (Premium)</h3>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hoeffner-bedroom">
+                            <label><span>Schlafzimmer komplett</span><span class="price-badge">€280-600</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hoeffner-living">
+                            <label><span>Wohnzimmer komplett</span><span class="price-badge">€320-700</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hoeffner-dining">
+                            <label><span>Esszimmer komplett</span><span class="price-badge">€280-620</span></label>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">XXXLUTZ / MÖMAX</h3>
+                    <div class="input-group">
+                        <label class="input-label">Einzelmöbel klein</label>
+                        <input type="number" id="lutz-small" min="0" max="20" value="0" placeholder="€40-150 pro Stück">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Einzelmöbel mittel</label>
+                        <input type="number" id="lutz-medium" min="0" max="20" value="0" placeholder="€70-240 pro Stück">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Einzelmöbel groß</label>
+                        <input type="number" id="lutz-large" min="0" max="10" value="0" placeholder="€120-400 pro Stück">
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="lutz-room">
+                        <label><span>Komplett-Zimmer</span><span class="price-badge">€250-800</span></label>
+                    </div>
+                </div>
+
+                <!-- KÜCHENMONTAGE -->
+                <div class="section">
+                    <h2 class="section-title">🍳 Küchenmontage</h2>
+
+                    <h3 class="subsection-title">Küchenschränke</h3>
+                    <div class="input-group">
+                        <label class="input-label">Küchenmarke</label>
+                        <select id="kitchen-brand">
+                            <option value="0-0-0-0">Keine Küche</option>
+                            <option value="100-150-80-120-180-250">IKEA KNOXHULT</option>
+                            <option value="120-180-100-150-220-300">IKEA METOD</option>
+                            <option value="100-160-80-130-180-280">POCO/ROLLER</option>
+                            <option value="150-220-120-180-250-350">NOBILIA</option>
+                            <option value="160-240-130-190-270-380">NOLTE</option>
+                            <option value="180-280-150-220-300-450">PREMIUM (Häcker/Schüller)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Unterschränke (Laufmeter)</label>
+                        <input type="number" id="kitchen-lower" min="0" max="20" step="0.5" value="0" placeholder="z.B. 3.5">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Oberschränke (Laufmeter)</label>
+                        <input type="number" id="kitchen-upper" min="0" max="20" step="0.5" value="0" placeholder="z.B. 2.5">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Hochschränke (Anzahl)</label>
+                        <input type="number" id="kitchen-tall" min="0" max="10" value="0">
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">Extras Korpusmontage</h3>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kitchen-corner-carousel">
+                            <label><span>Eckschrank Karussell</span><span class="price-badge">€40-70</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kitchen-corner-lemans">
+                            <label><span>Eckschrank Le Mans</span><span class="price-badge">€60-90</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kitchen-pullout">
+                            <label><span>Apothekerschrank</span><span class="price-badge">€50-80</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kitchen-trash">
+                            <label><span>Mülltrennsystem 3 Eimer</span><span class="price-badge">€35-60</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kitchen-softclose">
+                            <label><span>Softclose nachrüsten</span><span class="price-badge">€15-25</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kitchen-led">
+                            <label><span>LED-Beleuchtung</span><span class="price-badge">€30-50</span></label>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">Arbeitsplatte</h3>
+                    <div class="input-group">
+                        <label class="input-label">Material</label>
+                        <select id="countertop-material">
+                            <option value="0-0">Keine Arbeitsplatte</option>
+                            <option value="40-70">Laminat (€40-70/m)</option>
+                            <option value="60-100">Massivholz Buche/Eiche (€60-100/m)</option>
+                            <option value="80-130">Kunststein (€80-130/m)</option>
+                            <option value="120-200">Naturstein Granit (€120-200/m)</option>
+                            <option value="150-250">Quarz Silestone (€150-250/m)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Länge Arbeitsplatte (Meter)</label>
+                        <input type="number" id="countertop-length" min="0" max="20" step="0.5" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Form</label>
+                        <select id="countertop-shape">
+                            <option value="1-1">Linear (gerade)</option>
+                            <option value="1.8-2.2">L-Form (1 Ecke)</option>
+                            <option value="2.5-3.5">U-Form (2 Ecken)</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="countertop-milling">
+                        <label><span>Eckverbindung mit Fräsen</span><span class="price-badge">+€40-120</span></label>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">Spüle & Armatur</h3>
+                    <div class="input-group">
+                        <label class="input-label">Spülentyp</label>
+                        <select id="sink-type">
+                            <option value="0-0">Keine Spüle</option>
+                            <option value="70-110">Einbauspüle Standard (€70-110)</option>
+                            <option value="85-130">Einbauspüle 1,5 Becken (€85-130)</option>
+                            <option value="100-155">Einbauspüle 2 Becken (€100-155)</option>
+                            <option value="95-145">Unterbauspüle (€95-145)</option>
+                            <option value="140-220">Flächenbündige Spüle (€140-220)</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="sink-granite">
+                        <label><span>Granit/Keramik Spüle</span><span class="price-badge">+€30-60</span></label>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Wasserhahn</label>
+                        <select id="faucet-type">
+                            <option value="0-0">Kein Wasserhahn</option>
+                            <option value="40-90">Einhebelmischer Standard (€40-90)</option>
+                            <option value="50-110">Einhebelmischer ausziehbar (€50-110)</option>
+                            <option value="45-100">Zweigriffarmatur (€45-100)</option>
+                            <option value="60-130">Wandarmatur (€60-130)</option>
+                            <option value="70-150">Vorfensterarmatur klappbar (€70-150)</option>
+                            <option value="60-130">Mit Brause (€60-130)</option>
+                            <option value="80-170">3-Wege Armatur mit Filter (€80-170)</option>
+                        </select>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">Kochgeräte</h3>
+                    <div class="input-group">
+                        <label class="input-label">Kochfeld</label>
+                        <select id="cooktop-type">
+                            <option value="0-0">Kein Kochfeld</option>
+                            <option value="120-180">Elektrisch 230V (€120-180)</option>
+                            <option value="130-200">Ceran 4 Platten (€130-200)</option>
+                            <option value="140-220">Induktion Standard (€140-220)</option>
+                            <option value="150-260">Induktion Premium (€150-260)</option>
+                            <option value="140-220">Gas 4 Flammen (€140-220)</option>
+                            <option value="150-260">Gas 5 Flammen (€150-260)</option>
+                            <option value="90-150">Domino einzeln (€90-150)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Backofen</label>
+                        <select id="oven-type">
+                            <option value="0-0">Kein Backofen</option>
+                            <option value="50-95">Elektro-Backofen Unterschrank (€50-95)</option>
+                            <option value="60-110">Elektro-Backofen Hochschrank (€60-110)</option>
+                            <option value="80-150">Mit Mikrowelle (€80-150)</option>
+                            <option value="70-130">Dampfgarer (€70-130)</option>
+                        </select>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">Dunstabzug & Geräte</h3>
+                    <div class="input-group">
+                        <label class="input-label">Dunstabzugshaube</label>
+                        <select id="hood-type">
+                            <option value="0-0">Keine Haube</option>
+                            <option value="60-95">Unterbau Umluft (€60-95)</option>
+                            <option value="80-130">Wand Umluft (€80-130)</option>
+                            <option value="120-180">Insel Umluft (€120-180)</option>
+                            <option value="80-130">Unterbau Abluft (€80-130)</option>
+                            <option value="110-170">Wand Abluft (€110-170)</option>
+                            <option value="150-240">Insel Abluft (€150-240)</option>
+                            <option value="120-240">Abluft + Rohr verlegen (€120-240)</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="dishwasher">
+                            <label><span>Geschirrspüler einbauen</span><span class="price-badge">€100-150</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fridge-freestanding">
+                            <label><span>Kühlschrank freistehend</span><span class="price-badge">€30-65</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fridge-builtin">
+                            <label><span>Kühlschrank Einbau</span><span class="price-badge">€50-100</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fridge-sidebyside">
+                            <label><span>Side-by-Side</span><span class="price-badge">€60-140</span></label>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">Finisierung Küche</h3>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="silicone-complete">
+                            <label><span>Komplett Silikon</span><span class="price-badge">€80-200</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="adjustment-all">
+                            <label><span>Alle Türen/Schubladen justieren</span><span class="price-badge">€40-70</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cleaning-rough">
+                            <label><span>Grobe Reinigung</span><span class="price-badge">€40-150</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cleaning-fine">
+                            <label><span>Feine Reinigung</span><span class="price-badge">€65-200</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="packaging-kitchen">
+                            <label><span>Verpackung entsorgen</span><span class="price-badge">€40-220</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ZUSATZLEISTUNGEN -->
+                <div class="section">
+                    <h2 class="section-title">➕ Zusatzleistungen</h2>
+
+                    <h3 class="subsection-title">Wandmontage & Sicherheit</h3>
+                    <div class="input-group">
+                        <label class="input-label">Kleine Regale montieren (Anzahl)</label>
+                        <input type="number" id="wall-small-shelves" min="0" max="20" value="0" placeholder="€20-35 pro Stück">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Große Regale montieren (Anzahl)</label>
+                        <input type="number" id="wall-large-shelves" min="0" max="20" value="0" placeholder="€35-55 pro Stück">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Hängeschränke montieren (Anzahl)</label>
+                        <input type="number" id="wall-cabinets" min="0" max="20" value="0" placeholder="€25-65 pro Stück">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Spiegel montieren (Anzahl)</label>
+                        <input type="number" id="wall-mirrors" min="0" max="10" value="0" placeholder="€20-55 pro Stück">
+                    </div>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="wall-tv">
+                            <label><span>TV-Wandhalterung</span><span class="price-badge">€40-70</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="wall-wardrobe">
+                            <label><span>Garderobe montieren</span><span class="price-badge">€25-45</span></label>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">Kippsicherung (Anti-Tip)</h3>
+                    <div class="input-group">
+                        <label class="input-label">Möbel unter 150cm (Anzahl)</label>
+                        <input type="number" id="antitip-small" min="0" max="20" value="0" placeholder="€15-40 pro Stück">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Möbel 150-200cm (Anzahl)</label>
+                        <input type="number" id="antitip-medium" min="0" max="20" value="0" placeholder="€25-60 pro Stück">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Möbel über 200cm (Anzahl)</label>
+                        <input type="number" id="antitip-large" min="0" max="10" value="0" placeholder="€40-140 pro Stück">
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">Verpackung & Entsorgung</h3>
+                    <div class="input-group">
+                        <label class="input-label">Umfang</label>
+                        <select id="packaging">
+                            <option value="0-0">Keine Verpackungsentsorgung</option>
+                            <option value="15-40">1-2 Möbelstücke (€15-40)</option>
+                            <option value="25-65">3-5 Möbelstücke (€25-65)</option>
+                            <option value="40-95">6-10 Möbelstücke (€40-95)</option>
+                            <option value="60-140">Komplettes Zimmer (€60-140)</option>
+                            <option value="100-280">Ganze Wohnung (€100-280)</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="packaging-complete">
+                        <label><span>Komplett-Service (inkl. Kehren)</span><span class="price-badge">+€15-40</span></label>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">Anpassungen & Reparaturen</h3>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="adj-door-cut">
+                            <label><span>Tür kürzen</span><span class="price-badge">€20-45</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="adj-shelf-cut">
+                            <label><span>Regal kürzen</span><span class="price-badge">€15-35</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="adj-cable-hole">
+                            <label><span>Kabelbohrung</span><span class="price-badge">€10-20</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="adj-hinge">
+                            <label><span>Scharniere justieren</span><span class="price-badge">€12-20</span></label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="adj-drawer">
+                            <label><span>Schubladen justieren</span><span class="price-badge">€12-20</span></label>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">Möbel transportieren</h3>
+                    <div class="input-group">
+                        <label class="input-label">Kleine Möbel bewegen (Anzahl)</label>
+                        <input type="number" id="move-small" min="0" max="20" value="0" placeholder="€15-40 pro Stück">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Mittlere Möbel bewegen (Anzahl)</label>
+                        <input type="number" id="move-medium" min="0" max="10" value="0" placeholder="€25-65 pro Stück">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Große Möbel bewegen (Anzahl)</label>
+                        <input type="number" id="move-large" min="0" max="10" value="0" placeholder="€40-120 pro Stück">
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="move-stairs">
+                        <label><span>Mit Treppen (Etage)</span><span class="price-badge">+€15-40</span></label>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="subsection-title">Alte Küche/Möbel</h3>
+                    <div class="input-group">
+                        <label class="input-label">Alte Küche demontieren</label>
+                        <select id="old-kitchen">
+                            <option value="0-0">Keine alte Küche</option>
+                            <option value="120-180">Klein 3m - nur Demontage (€120-180)</option>
+                            <option value="220-340">Klein 3m - inkl. Entsorgung (€220-340)</option>
+                            <option value="180-280">Mittel 4-6m - nur Demontage (€180-280)</option>
+                            <option value="340-520">Mittel 4-6m - inkl. Entsorgung (€340-520)</option>
+                            <option value="280-420">Groß 7-10m - nur Demontage (€280-420)</option>
+                            <option value="520-800">Groß 7-10m - inkl. Entsorgung (€520-800)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="calculate-button" onclick="calculateTotal()">
+                    🧮 GESAMTKOSTEN BERECHNEN
+                </button>
+            </div>
+
+            <!-- RESULT BOX -->
+            <div class="result-sticky">
+                <div class="result-box" id="result">
+                    <h3 class="result-title">💰 Ihre Kostenschätzung</h3>
+                    <div id="result-content">
+                        <p style="text-align: center; opacity: 0.8; padding: 20px;">
+                            Wählen Sie Möbel und Leistungen aus und klicken Sie auf "GESAMTKOSTEN BERECHNEN"
+                        </p>
+                    </div>
+                </div>
+
+                <div class="warning-box" style="margin-top: 20px;">
+                    <div class="warning-title">⚠️ Wichtig</div>
+                    <div style="font-size: 0.85rem;">
+                        Dies ist eine automatische Schätzung. Der finale Preis kann variieren basierend auf:
+                        <ul style="margin: 10px 0 0 20px; font-size: 0.8rem;">
+                            <li>Wandbeschaffenheit</li>
+                            <li>Zugänglichkeit</li>
+                            <li>Zeitaufwand vor Ort</li>
+                            <li>Zusätzliche Anpassungen</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function parsePrice(str) {
+            const [min, max] = str.split('-').map(Number);
+            return { min, max };
+        }
+
+        function addToTotal(price, quantity = 1) {
+            return {
+                min: price.min * quantity,
+                max: price.max * quantity
+            };
+        }
+
+        function calculateTotal() {
+            let total = { min: 0, max: 0 };
+            let items = [];
+
+            // PAX Schrank
+            const paxQty = parseInt(document.getElementById('pax-quantity').value) || 0;
+            const paxWidth = document.getElementById('pax-width').value;
+            if (paxQty > 0 && paxWidth !== '0-0') {
+                const price = addToTotal(parsePrice(paxWidth), paxQty);
+                total.min += price.min; total.max += price.max;
+                items.push(`${paxQty}× PAX Schrank: €${price.min}-${price.max}`);
+
+                if (document.getElementById('pax-sliding').checked) {
+                    total.min += 20 * paxQty; total.max += 50 * paxQty;
+                    items.push(`  + Schiebetüren: €${20 * paxQty}-${50 * paxQty}`);
+                }
+                if (document.getElementById('pax-drawers').checked) {
+                    total.min += 20 * paxQty; total.max += 35 * paxQty;
+                    items.push(`  + Schubladen 2-4: €${20 * paxQty}-${35 * paxQty}`);
+                }
+                if (document.getElementById('pax-drawers-many').checked) {
+                    total.min += 35 * paxQty; total.max += 60 * paxQty;
+                    items.push(`  + Schubladen 5-8: €${35 * paxQty}-${60 * paxQty}`);
+                }
+                if (document.getElementById('pax-glass').checked) {
+                    total.min += 15 * paxQty; total.max += 25 * paxQty;
+                    items.push(`  + Glasböden: €${15 * paxQty}-${25 * paxQty}`);
+                }
+                if (document.getElementById('pax-lighting').checked) {
+                    total.min += 25 * paxQty; total.max += 40 * paxQty;
+                    items.push(`  + Beleuchtung: €${25 * paxQty}-${40 * paxQty}`);
+                }
+                if (document.getElementById('pax-wall').checked) {
+                    total.min += 25 * paxQty; total.max += 40 * paxQty;
+                    items.push(`  + Wandmontage: €${25 * paxQty}-${40 * paxQty}`);
+                }
+            }
+
+            // MALM Bett
+            const malmQty = parseInt(document.getElementById('malm-quantity').value) || 0;
+            const malmSize = document.getElementById('malm-size').value;
+            if (malmQty > 0 && malmSize !== '0-0') {
+                const price = addToTotal(parsePrice(malmSize), malmQty);
+                total.min += price.min; total.max += price.max;
+                items.push(`${malmQty}× MALM Bett: €${price.min}-${price.max}`);
+
+                if (document.getElementById('malm-storage').checked) {
+                    total.min += 30 * malmQty; total.max += 50 * malmQty;
+                    items.push(`  + Aufbewahrung: €${30 * malmQty}-${50 * malmQty}`);
+                }
+                if (document.getElementById('malm-lattenrost').checked) {
+                    total.min += 20 * malmQty; total.max += 35 * malmQty;
+                    items.push(`  + Lattenrost: €${20 * malmQty}-${35 * malmQty}`);
+                }
+            }
+
+            // Kommode
+            const kommodeQty = parseInt(document.getElementById('kommode-quantity').value) || 0;
+            const kommodeDrawers = document.getElementById('kommode-drawers').value;
+            if (kommodeQty > 0 && kommodeDrawers !== '0-0') {
+                const price = addToTotal(parsePrice(kommodeDrawers), kommodeQty);
+                total.min += price.min; total.max += price.max;
+                items.push(`${kommodeQty}× Kommode: €${price.min}-${price.max}`);
+
+                if (document.getElementById('kommode-glass').checked) {
+                    total.min += 10 * kommodeQty; total.max += 15 * kommodeQty;
+                }
+                if (document.getElementById('kommode-wall').checked) {
+                    total.min += 20 * kommodeQty; total.max += 35 * kommodeQty;
+                }
+            }
+
+            // BILLY
+            const billyQty = parseInt(document.getElementById('billy-quantity').value) || 0;
+            const billyHeight = document.getElementById('billy-height').value;
+            if (billyQty > 0 && billyHeight !== '0-0') {
+                const price = addToTotal(parsePrice(billyHeight), billyQty);
+                total.min += price.min; total.max += price.max;
+                items.push(`${billyQty}× BILLY: €${price.min}-${price.max}`);
+
+                if (document.getElementById('billy-glass').checked) {
+                    total.min += 15 * billyQty; total.max += 25 * billyQty;
+                }
+                if (document.getElementById('billy-corner').checked) {
+                    total.min += 25; total.max += 40;
+                }
+                if (document.getElementById('billy-wall').checked) {
+                    total.min += 15 * billyQty; total.max += 25 * billyQty;
+                }
+            }
+
+            // BESTÅ
+            const bestaCombo = document.getElementById('besta-combo').value;
+            if (bestaCombo !== '0-0') {
+                const price = parsePrice(bestaCombo);
+                total.min += price.min; total.max += price.max;
+                items.push(`BESTÅ: €${price.min}-${price.max}`);
+
+                if (document.getElementById('besta-glass').checked) {
+                    total.min += 15; total.max += 25;
+                }
+                if (document.getElementById('besta-drawers').checked) {
+                    total.min += 20; total.max += 35;
+                }
+                if (document.getElementById('besta-light').checked) {
+                    total.min += 30; total.max += 50;
+                }
+                if (document.getElementById('besta-cable').checked) {
+                    total.min += 20; total.max += 35;
+                }
+            }
+
+            // Tisch & Stühle
+            const table = document.getElementById('table').value;
+            if (table !== '0-0') {
+                const price = parsePrice(table);
+                total.min += price.min; total.max += price.max;
+                items.push(`Tisch: €${price.min}-${price.max}`);
+            }
+
+            const chairs = parseInt(document.getElementById('chairs').value) || 0;
+            if (chairs > 0) {
+                total.min += chairs * 8;
+                total.max += chairs * 25;
+                items.push(`${chairs}× Stühle: €${chairs * 8}-${chairs * 25}`);
+            }
+
+            // POCO/ROLLER
+            const pocoItems = [
+                ['poco-wardrobe-2', 'Schrank 2-türig', '60-220'],
+                ['poco-wardrobe-3', 'Schrank 3-türig', '80-280'],
+                ['poco-wardrobe-4', 'Schrank 4+ türig', '100-350'],
+                ['poco-bed-simple', 'Bett ohne Kästen', '50-180'],
+                ['poco-bed-storage', 'Bett mit Kästen', '70-240'],
+                ['poco-dresser', 'Kommode', '40-170'],
+                ['poco-living-2', 'Wohnwand 2-teilig', '100-400'],
+                ['poco-living-3', 'Wohnwand 3+ teilig', '150-600']
+            ];
+
+            pocoItems.forEach(([id, name, price]) => {
+                if (document.getElementById(id).checked) {
+                    const p = parsePrice(price);
+                    total.min += p.min; total.max += p.max;
+                    items.push(`${name}: €${p.min}-${p.max}`);
+                }
+            });
+
+            // HÖFFNER
+            if (document.getElementById('hoeffner-bedroom').checked) {
+                total.min += 280; total.max += 600;
+                items.push('Schlafzimmer komplett: €280-600');
+            }
+            if (document.getElementById('hoeffner-living').checked) {
+                total.min += 320; total.max += 700;
+                items.push('Wohnzimmer komplett: €320-700');
+            }
+            if (document.getElementById('hoeffner-dining').checked) {
+                total.min += 280; total.max += 620;
+                items.push('Esszimmer komplett: €280-620');
+            }
+
+            // XXXLUTZ
+            const lutzSmall = parseInt(document.getElementById('lutz-small').value) || 0;
+            if (lutzSmall > 0) {
+                total.min += lutzSmall * 40; total.max += lutzSmall * 150;
+                items.push(`${lutzSmall}× Einzelmöbel klein: €${lutzSmall * 40}-${lutzSmall * 150}`);
+            }
+            const lutzMedium = parseInt(document.getElementById('lutz-medium').value) || 0;
+            if (lutzMedium > 0) {
+                total.min += lutzMedium * 70; total.max += lutzMedium * 240;
+                items.push(`${lutzMedium}× Einzelmöbel mittel: €${lutzMedium * 70}-${lutzMedium * 240}`);
+            }
+            const lutzLarge = parseInt(document.getElementById('lutz-large').value) || 0;
+            if (lutzLarge > 0) {
+                total.min += lutzLarge * 120; total.max += lutzLarge * 400;
+                items.push(`${lutzLarge}× Einzelmöbel groß: €${lutzLarge * 120}-${lutzLarge * 400}`);
+            }
+            if (document.getElementById('lutz-room').checked) {
+                total.min += 250; total.max += 800;
+                items.push('Komplett-Zimmer: €250-800');
+            }
+
+            // KÜCHE
+            const kitchenBrand = document.getElementById('kitchen-brand').value;
+            const kitchenLower = parseFloat(document.getElementById('kitchen-lower').value) || 0;
+            const kitchenUpper = parseFloat(document.getElementById('kitchen-upper').value) || 0;
+            const kitchenTall = parseInt(document.getElementById('kitchen-tall').value) || 0;
+
+            if (kitchenBrand !== '0-0-0-0' && (kitchenLower > 0 || kitchenUpper > 0 || kitchenTall > 0)) {
+                const [lMin, lMax, uMin, uMax, tMin, tMax] = kitchenBrand.split('-').map(Number);
+                
+                if (kitchenLower > 0) {
+                    const price = { min: lMin * kitchenLower, max: lMax * kitchenLower };
+                    total.min += price.min; total.max += price.max;
+                    items.push(`Unterschränke ${kitchenLower}m: €${Math.round(price.min)}-${Math.round(price.max)}`);
+                }
+                if (kitchenUpper > 0) {
+                    const price = { min: uMin * kitchenUpper, max: uMax * kitchenUpper };
+                    total.min += price.min; total.max += price.max;
+                    items.push(`Oberschränke ${kitchenUpper}m: €${Math.round(price.min)}-${Math.round(price.max)}`);
+                }
+                if (kitchenTall > 0) {
+                    const price = { min: tMin * kitchenTall, max: tMax * kitchenTall };
+                    total.min += price.min; total.max += price.max;
+                    items.push(`${kitchenTall}× Hochschrank: €${Math.round(price.min)}-${Math.round(price.max)}`);
+                }
+            }
+
+            // Küchen-Extras
+            const kitchenExtras = [
+                ['kitchen-corner-carousel', 'Eckschrank Karussell', '40-70'],
+                ['kitchen-corner-lemans', 'Eckschrank Le Mans', '60-90'],
+                ['kitchen-pullout', 'Apothekerschrank', '50-80'],
+                ['kitchen-trash', 'Mülltrennsystem', '35-60'],
+                ['kitchen-softclose', 'Softclose', '15-25'],
+                ['kitchen-led', 'LED-Beleuchtung', '30-50']
+            ];
+
+            kitchenExtras.forEach(([id, name, price]) => {
+                if (document.getElementById(id).checked) {
+                    const p = parsePrice(price);
+                    total.min += p.min; total.max += p.max;
+                    items.push(`${name}: €${p.min}-${p.max}`);
+                }
+            });
+
+            // Arbeitsplatte
+            const countertopMaterial = document.getElementById('countertop-material').value;
+            const countertopLength = parseFloat(document.getElementById('countertop-length').value) || 0;
+            const countertopShape = document.getElementById('countertop-shape').value;
+            
+            if (countertopMaterial !== '0-0' && countertopLength > 0) {
+                const material = parsePrice(countertopMaterial);
+                const shape = parsePrice(countertopShape);
+                const price = {
+                    min: material.min * countertopLength * shape.min,
+                    max: material.max * countertopLength * shape.max
+                };
+                total.min += price.min; total.max += price.max;
+                items.push(`Arbeitsplatte ${countertopLength}m: €${Math.round(price.min)}-${Math.round(price.max)}`);
+
+                if (document.getElementById('countertop-milling').checked) {
+                    total.min += 40; total.max += 120;
+                    items.push(`  + Fräsen: €40-120`);
+                }
+            }
+
+            // Spüle & Armatur
+            const sinkType = document.getElementById('sink-type').value;
+            if (sinkType !== '0-0') {
+                const p = parsePrice(sinkType);
+                total.min += p.min; total.max += p.max;
+                items.push(`Spüle: €${p.min}-${p.max}`);
+
+                if (document.getElementById('sink-granite').checked) {
+                    total.min += 30; total.max += 60;
+                }
+            }
+
+            const faucetType = document.getElementById('faucet-type').value;
+            if (faucetType !== '0-0') {
+                const p = parsePrice(faucetType);
+                total.min += p.min; total.max += p.max;
+                items.push(`Wasserhahn: €${p.min}-${p.max}`);
+            }
+
+            // Kochgeräte
+            const cooktopType = document.getElementById('cooktop-type').value;
+            if (cooktopType !== '0-0') {
+                const p = parsePrice(cooktopType);
+                total.min += p.min; total.max += p.max;
+                items.push(`Kochfeld: €${p.min}-${p.max}`);
+            }
+
+            const ovenType = document.getElementById('oven-type').value;
+            if (ovenType !== '0-0') {
+                const p = parsePrice(ovenType);
+                total.min += p.min; total.max += p.max;
+                items.push(`Backofen: €${p.min}-${p.max}`);
+            }
+
+            const hoodType = document.getElementById('hood-type').value;
+            if (hoodType !== '0-0') {
+                const p = parsePrice(hoodType);
+                total.min += p.min; total.max += p.max;
+                items.push(`Dunstabzug: €${p.min}-${p.max}`);
+            }
+
+            // Weitere Küchengeräte
+            const kitchenAppliances = [
+                ['dishwasher', 'Geschirrspüler', '100-150'],
+                ['fridge-freestanding', 'Kühlschrank freistehend', '30-65'],
+                ['fridge-builtin', 'Kühlschrank Einbau', '50-100'],
+                ['fridge-sidebyside', 'Side-by-Side', '60-140']
+            ];
+
+            kitchenAppliances.forEach(([id, name, price]) => {
+                if (document.getElementById(id).checked) {
+                    const p = parsePrice(price);
+                    total.min += p.min; total.max += p.max;
+                    items.push(`${name}: €${p.min}-${p.max}`);
+                }
+            });
+
+            // Finisierung Küche
+            const kitchenFinishing = [
+                ['silicone-complete', 'Silikon komplett', '80-200'],
+                ['adjustment-all', 'Justierung', '40-70'],
+                ['cleaning-rough', 'Grobe Reinigung', '40-150'],
+                ['cleaning-fine', 'Feine Reinigung', '65-200'],
+                ['packaging-kitchen', 'Verpackung Küche', '40-220']
+            ];
+
+            kitchenFinishing.forEach(([id, name, price]) => {
+                if (document.getElementById(id).checked) {
+                    const p = parsePrice(price);
+                    total.min += p.min; total.max += p.max;
+                    items.push(`${name}: €${p.min}-${p.max}`);
+                }
+            });
+
+            // Wandmontage
+            const wallSmallShelves = parseInt(document.getElementById('wall-small-shelves').value) || 0;
+            if (wallSmallShelves > 0) {
+                total.min += wallSmallShelves * 20; total.max += wallSmallShelves * 35;
+                items.push(`${wallSmallShelves}× Kleine Regale: €${wallSmallShelves * 20}-${wallSmallShelves * 35}`);
+            }
+
+            const wallLargeShelves = parseInt(document.getElementById('wall-large-shelves').value) || 0;
+            if (wallLargeShelves > 0) {
+                total.min += wallLargeShelves * 35; total.max += wallLargeShelves * 55;
+                items.push(`${wallLargeShelves}× Große Regale: €${wallLargeShelves * 35}-${wallLargeShelves * 55}`);
+            }
+
+            const wallCabinets = parseInt(document.getElementById('wall-cabinets').value) || 0;
+            if (wallCabinets > 0) {
+                total.min += wallCabinets * 25; total.max += wallCabinets * 65;
+                items.push(`${wallCabinets}× Hängeschränke: €${wallCabinets * 25}-${wallCabinets * 65}`);
+            }
+
+            const wallMirrors = parseInt(document.getElementById('wall-mirrors').value) || 0;
+            if (wallMirrors > 0) {
+                total.min += wallMirrors * 20; total.max += wallMirrors * 55;
+                items.push(`${wallMirrors}× Spiegel: €${wallMirrors * 20}-${wallMirrors * 55}`);
+            }
+
+            if (document.getElementById('wall-tv').checked) {
+                total.min += 40; total.max += 70;
+                items.push('TV-Halterung: €40-70');
+            }
+
+            if (document.getElementById('wall-wardrobe').checked) {
+                total.min += 25; total.max += 45;
+                items.push('Garderobe: €25-45');
+            }
+
+            // Anti-Tip
+            const antitipSmall = parseInt(document.getElementById('antitip-small').value) || 0;
+            if (antitipSmall > 0) {
+                total.min += antitipSmall * 15; total.max += antitipSmall * 40;
+                items.push(`${antitipSmall}× Kippsicherung <150cm: €${antitipSmall * 15}-${antitipSmall * 40}`);
+            }
+
+            const antitipMedium = parseInt(document.getElementById('antitip-medium').value) || 0;
+            if (antitipMedium > 0) {
+                total.min += antitipMedium * 25; total.max += antitipMedium * 60;
+                items.push(`${antitipMedium}× Kippsicherung 150-200cm: €${antitipMedium * 25}-${antitipMedium * 60}`);
+            }
+
+            const antitipLarge = parseInt(document.getElementById('antitip-large').value) || 0;
+            if (antitipLarge > 0) {
+                total.min += antitipLarge * 40; total.max += antitipLarge * 140;
+                items.push(`${antitipLarge}× Kippsicherung >200cm: €${antitipLarge * 40}-${antitipLarge * 140}`);
+            }
+
+            // Verpackung
+            const packaging = document.getElementById('packaging').value;
+            if (packaging !== '0-0') {
+                const p = parsePrice(packaging);
+                total.min += p.min; total.max += p.max;
+                items.push(`Verpackung: €${p.min}-${p.max}`);
+
+                if (document.getElementById('packaging-complete').checked) {
+                    total.min += 15; total.max += 40;
+                }
+            }
+
+            // Anpassungen
+            const adjustments = [
+                ['adj-door-cut', 'Tür kürzen', '20-45'],
+                ['adj-shelf-cut', 'Regal kürzen', '15-35'],
+                ['adj-cable-hole', 'Kabelbohrung', '10-20'],
+                ['adj-hinge', 'Scharniere', '12-20'],
+                ['adj-drawer', 'Schubladen', '12-20']
+            ];
+
+            adjustments.forEach(([id, name, price]) => {
+                if (document.getElementById(id).checked) {
+                    const p = parsePrice(price);
+                    total.min += p.min; total.max += p.max;
+                    items.push(`${name}: €${p.min}-${p.max}`);
+                }
+            });
+
+            // Möbel bewegen
+            const moveSmall = parseInt(document.getElementById('move-small').value) || 0;
+            if (moveSmall > 0) {
+                total.min += moveSmall * 15; total.max += moveSmall * 40;
+                items.push(`${moveSmall}× Kleine Möbel bewegen: €${moveSmall * 15}-${moveSmall * 40}`);
+            }
+
+            const moveMedium = parseInt(document.getElementById('move-medium').value) || 0;
+            if (moveMedium > 0) {
+                total.min += moveMedium * 25; total.max += moveMedium * 65;
+                items.push(`${moveMedium}× Mittlere Möbel bewegen: €${moveMedium * 25}-${moveMedium * 65}`);
+            }
+
+            const moveLarge = parseInt(document.getElementById('move-large').value) || 0;
+            if (moveLarge > 0) {
+                total.min += moveLarge * 40; total.max += moveLarge * 120;
+                items.push(`${moveLarge}× Große Möbel bewegen: €${moveLarge * 40}-${moveLarge * 120}`);
+            }
+
+            if (document.getElementById('move-stairs').checked) {
+                const moveTotal = moveSmall + moveMedium + moveLarge;
+                if (moveTotal > 0) {
+                    total.min += moveTotal * 15; total.max += moveTotal * 40;
+                }
+            }
+
+            // Alte Küche
+            const oldKitchen = document.getElementById('old-kitchen').value;
+            if (oldKitchen !== '0-0') {
+                const p = parsePrice(oldKitchen);
+                total.min += p.min; total.max += p.max;
+                items.push(`Alte Küche: €${p.min}-${p.max}`);
+            }
+
+            // ERGEBNIS ANZEIGEN
+            if (total.min === 0 && total.max === 0) {
+                alert('Bitte wählen Sie mindestens ein Möbelstück oder eine Leistung aus!');
+                return;
+            }
+
+            const nettoMin = Math.round(total.min / 1.19);
+            const nettoMax = Math.round(total.max / 1.19);
+            const mwstMin = total.min - nettoMin;
+            const mwstMax = total.max - nettoMax;
+
+            let resultHTML = '<div style="max-height: 400px; overflow-y: auto; margin-bottom: 15px;">';
+            items.forEach(item => {
+                resultHTML += `<div class="result-item" style="font-size: 0.85rem;"><span>${item}</span></div>`;
+            });
+            resultHTML += '</div>';
+
+            resultHTML += '<div class="result-total-section">';
+            resultHTML += `<div class="result-item"><span>Netto:</span><span style="font-size: 1.1rem;">€${nettoMin} - €${nettoMax}</span></div>`;
+            resultHTML += `<div class="result-item"><span>MwSt (19%):</span><span style="font-size: 1.1rem;">€${mwstMin} - €${mwstMax}</span></div>`;
+            resultHTML += `<div class="result-item" style="padding-top: 15px;"><span><strong>GESAMT:</strong></span><span class="result-total">€${total.min} - €${total.max}</span></div>`;
+            resultHTML += '</div>';
+
+            document.getElementById('result-content').innerHTML = resultHTML;
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function resetCalculator() {
+            document.querySelectorAll('select').forEach(s => s.value = s.options[0].value);
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[type="number"]').forEach(input => input.value = 0);
+            
+            document.getElementById('result-content').innerHTML = `
+                <p style="text-align: center; opacity: 0.8; padding: 20px;">
+                    Wählen Sie Möbel und Leistungen aus und klicken Sie auf "GESAMTKOSTEN BERECHNEN"
+                </p>
+            `;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
